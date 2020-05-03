@@ -1,3 +1,3 @@
 # vk-bot
 
-pip install vk_api
+pip3 install vk_api
