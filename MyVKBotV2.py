@@ -77,18 +77,21 @@ def parse_message(event):
             with conn:
                 c.execute('''UPDATE mailing SET first=:first WHERE id=:id''',
                           {'id': user['id'], 'first': int(not bool(user_mailing[1]))})
+            done(user)
         elif event.text == 'second':
             c.execute('''SELECT * FROM mailing WHERE id=:id''', {'id': user['id']})
             user_mailing = c.fetchone()
             with conn:
                 c.execute('''UPDATE mailing SET second=:second WHERE id=:id''',
                           {'id': user['id'], 'second': int(not bool(user_mailing[2]))})
+            done(user)
         elif event.text == 'third':
             c.execute('''SELECT * FROM mailing WHERE id=:id''', {'id': user['id']})
             user_mailing = c.fetchone()
             with conn:
                 c.execute('''UPDATE mailing SET third=:third WHERE id=:id''',
                           {'id': user['id'], 'third': int(not bool(user_mailing[3]))})
+            done(user)
         elif user_from_db[4] is None:
             if event.text != "К предыдущему вопросу🔙":
                 if event.text != 'Начать' and not check_for_dig(event.text):
@@ -184,7 +187,7 @@ def parse_message(event):
                     c.execute('''UPDATE people SET for_what=:for_what WHERE id=:id''', {'id': user_from_db[0], 'for_what': None})
                     c.execute('''UPDATE people SET exam=:exam WHERE id=:id''', {'id': user_from_db[0], 'exam': None})
                     c.execute('''UPDATE people SET kind=:kind WHERE id=:id''', {'id': user_from_db[0], 'kind': None})
-                ask_for_exam(user, conn, c, user_from_db)
+                ask_for_what(user, conn, c, user_from_db)
             else:
                 with conn:
                     c.execute('''UPDATE people SET kind=:kind WHERE id=:id''', {'id': user_from_db[0], 'kind': None})
@@ -243,8 +246,14 @@ def ask_for_exam(user, conn, c, user_from_db):
 
 def del_keyboard(message_id):
     message = vk_session.method('messages.getById', {'message_ids': message_id})['items'][0]
+    keyboard = vk_api.keyboard.VkKeyboard()
+    keyboard.add_button('Подать ещё одну заявку🆕', vk_api.keyboard.VkKeyboardColor.POSITIVE)
+    keyboard.add_line()
+    keyboard.add_button('К предыдущему вопросу🔙', vk_api.keyboard.VkKeyboardColor.NEGATIVE)
+    keyboard.add_line()
+    keyboard.add_button('Рассылка📫', vk_api.keyboard.VkKeyboardColor.PRIMARY)
     vk_session.method('messages.edit', {'message': message['text'], 'message_id': message_id,
-                                        'keyboard': vk_api.keyboard.VkKeyboard.get_empty_keyboard(),
+                                        'keyboard': keyboard.get_keyboard(),
                                         'peer_id': message['peer_id']})
 
 def invalid_value(user, end=False):
@@ -302,6 +311,17 @@ def check_for_dig(text: str):
         if text.find(str(i)) != -1:
             return True
     return False
+
+def done(user):
+    keyboard = vk_api.keyboard.VkKeyboard()
+    keyboard.add_button('Подать ещё одну заявку🆕', vk_api.keyboard.VkKeyboardColor.POSITIVE)
+    keyboard.add_line()
+    keyboard.add_button('К предыдущему вопросу🔙', vk_api.keyboard.VkKeyboardColor.NEGATIVE)
+    keyboard.add_line()
+    keyboard.add_button('Рассылка📫', vk_api.keyboard.VkKeyboardColor.PRIMARY)
+    vk_session.method('messages.send', {'user_id': user['id'], 'random_id': random.getrandbits(64),
+                                        'message': 'Успех!',
+                                        'keyboard': keyboard.get_keyboard()})
 
 def mailing(user, conn, c, user_from_db):
     keyboard = vk_api.keyboard.VkKeyboard(inline=True)
