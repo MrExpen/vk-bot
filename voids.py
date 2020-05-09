@@ -21,8 +21,6 @@ def parse_message(event, vk_session):
 
         if user_from_db == []:
             create_new_people(conn, c, user)
-            vk_session.method('messages.send', {'user_id': user['id'], 'random_id': random.getrandbits(64),
-                                                'message': 'Доброго времени суток!'})
             ask_for_name(user, vk_session)
         elif event.text == 'Подать ещё одну заявку🆕':
             if not user_from_db[8] is None:
@@ -137,7 +135,7 @@ def parse_message(event, vk_session):
                 if int(user_from_db[5]) < 10:
                     with conn:
                         c.execute('''UPDATE people SET for_what=:for_what WHERE id=:id''', {'id': user_from_db[0], 'for_what': None})
-                    ask_for_exam(user, conn, c, user_from_db, vk_session=vk_session)
+                    ask_for_what(user, conn, c, user_from_db, vk_session=vk_session)
                 else:
                     with conn:
                         c.execute('''UPDATE people SET exam=:exam WHERE id=:id''', {'id': user_from_db[0], 'exam': None})
