@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import vk_api
+import time
 import db
 from voids import parse_message
 import config
@@ -19,5 +20,8 @@ if __name__ == '__main__':
     while True:
         try:
             main()
+        except KeyboardInterrupt:
+            print('KeyboardInterrupt at', time.strftime("%Y.%m.%d %H:%M:%S", time.localtime()))
+            break
         except:
             print("Some other error occurred!")

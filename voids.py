@@ -1,12 +1,13 @@
 import vk_api
 import random
 import vk_api.keyboard
+import time
 from db import create_new_people, conn, c
 
 def parse_message(event, vk_session):
     user = vk_session.method('users.get', {'user_id': event.user_id})[0]
 
-    print("message from {0[first_name]} {0[last_name]}: {1.text}".format(user, event))
+    print(time.strftime("%Y.%m.%d %H:%M:%S", time.localtime()), "{0[first_name]} {0[last_name]}: {1.text}".format(user, event))
     c.execute('SELECT * FROM people WHERE vk_id=:vk_id', {'vk_id': user['id']})
     user_from_db = c.fetchall()
     if vk_session.method('groups.isMember', {'group_id': 181015479, 'user_id': user['id']}):
