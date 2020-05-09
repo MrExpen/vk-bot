@@ -24,4 +24,4 @@ if __name__ == '__main__':
             print('KeyboardInterrupt at', time.strftime("%Y.%m.%d %H:%M:%S", time.localtime()))
             break
         except:
-            print("Some other error occurred!")
+            print("Some other error occurred at,", time.strftime("%Y.%m.%d %H:%M:%S", time.localtime()))
