@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import vk_api
 import time
-import db
 from voids import parse_message
 import config
 from vk_api.longpoll import VkLongPoll, VkEventType
