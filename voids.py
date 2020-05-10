@@ -20,6 +20,12 @@ def parse_message(event, vk_session):
 
     if user_from_db == []:
         create_new_people(conn, c, user)
+        vk_session.method('messages.send',{
+            'user_id': user['id'],
+            'random_da': random.getrandbits(64),
+            'message': '''Ответьте на пару вопросов чтобы оставить заявку,
+                вскоре после этого, мы свяжемся с вами для уточнения деталей.'''
+        })
         ask_for_name(user, vk_session)
     elif event.text == 'Подать ещё одну заявку🆕':
         if not user_from_db[8] is None:
