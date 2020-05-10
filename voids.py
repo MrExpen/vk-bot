@@ -22,7 +22,7 @@ def parse_message(event, vk_session):
         create_new_people(conn, c, user)
         vk_session.method('messages.send',{
             'user_id': user['id'],
-            'random_da': random.getrandbits(64),
+            'random_id': random.getrandbits(64),
             'message': '''Ответьте на пару вопросов чтобы оставить заявку,
                 вскоре после этого, мы свяжемся с вами для уточнения деталей.'''
         })
