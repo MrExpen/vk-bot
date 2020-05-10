@@ -6,6 +6,8 @@ from voids import parse_message
 import config
 from vk_api.longpoll import VkLongPoll, VkEventType
 
+print('started at', time.strftime("%Y.%m.%d %H:%M:%S", time.localtime()))
+
 def main():
     vk_session = vk_api.VkApi(token=config.TOKEN)
     longpoll = VkLongPoll(vk_session)
